@@ -35,9 +35,9 @@ filter_grid_points <- function(f_grid, f_centroid, focal_points = NULL, f_dist =
     # Filter distance in degrees for initial filter step
     distance <-
       (((
-        f_centroid$latitude - f_centroid$latitude1
+        f_centroid$latitude - f_centroid$focal_latitude
       ) ^ 2) + ((
-        f_centroid$longitude - f_centroid$longitude1
+        f_centroid$longitude - f_centroid$focal_longitude
       ) ^ 2)) ^ (1 / 2)
     
     if (distance > h_size) {
@@ -45,7 +45,7 @@ filter_grid_points <- function(f_grid, f_centroid, focal_points = NULL, f_dist =
       angle_toward <-
         geosphere::finalBearing(
           c(f_centroid$longitude, f_centroid$latitude),
-          c(f_centroid$longitude1, f_centroid$latitude1),
+          c(f_centroid$focal_longitude, f_centroid$focal_latitude),
           a = 6378160,
           f = 1 / 298.257222101
         )
@@ -62,17 +62,17 @@ filter_grid_points <- function(f_grid, f_centroid, focal_points = NULL, f_dist =
       flat <- close_centroid[2]
     } }
 
-
+  
   grid <- f_grid %>%
     ungroup() %>%
-    filter(flat - f_dist < hex_lat & hex_lat < flat + f_dist) %>%
-    filter(flong - f_dist < hex_long & hex_long < flong + f_dist)
+    filter((flat - f_dist) < hex_lat & hex_lat < (flat + f_dist)) %>%
+    filter((flong - f_dist) < hex_long & hex_long < (flong + f_dist))
 
   grid <- grid %>%
-    rowwise() %>%
+    group_by(id) %>%
     mutate(
-      hex_lat_c = hex_lat - flat,
-      hex_long_c = hex_long - flong
+      hex_lat_c = (hex_lat - flat),
+      hex_long_c = (hex_long - flong)
     ) %>%
     mutate(hyp = ((hex_lat_c^2) + (hex_long_c^2))^(1 / 2))
 
@@ -81,7 +81,7 @@ filter_grid_points <- function(f_grid, f_centroid, focal_points = NULL, f_dist =
   if ("focal_distance" %in% colnames(f_centroid)) {
     f_angle <- f_centroid %>%
       mutate(
-        atan = atan2(latitude - latitude1, longitude - longitude1),
+        atan = atan2(latitude - focal_latitude, longitude - focal_longitude),
         angle = (atan * 180 / pi),
         pangle = ifelse(angle < 0, angle + 360, angle)
       ) %>%
@@ -117,8 +117,8 @@ filter_grid_points <- function(f_grid, f_centroid, focal_points = NULL, f_dist =
         filter(hex_angle < angle_plus | angle_minus > hex_angle)
     }
   }
-
+  
   return(grid)
 }
 
-utils::globalVariables(c("hex_lat", "hex_long", ".", "pangle", "assigned", "filter_dist"))
+utils::globalVariables(c("hex_lat", "hex_long", ".", "pangle", "assigned", "filter_dist", "rownumber"))

@@ -1,4 +1,5 @@
 ---
+title: "Tasmania"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -19,11 +20,15 @@ knitr::opts_chunk$set(
 
 The sugarbag package can be downloaded directly from github:
 
-```{r}
-#devtools::install_github("srkobakian/sugarbag")
+```{r sugarbag}
+#remotes::install_github("srkobakian/sugarbag")
 library(sugarbag)
+```
+
+```{r libraries}
 library(dplyr)
 library(tidyr)
+library(tibble)
 library(ggplot2)
 ```
 

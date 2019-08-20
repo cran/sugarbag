@@ -2,7 +2,7 @@
 #'
 #' Allocates each polygon in a shape file to a grid point to create a map of
 #' tesselated hexagons. The spatial relationships of areas are preserved while
-#' the geographic chape of each area is lost.
+#' the geographic shape of each area is lost.
 #'
 #' @param shp a shape file
 #' @param sf_id name of a unique column that distinguishes areas
@@ -136,7 +136,7 @@ create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_f
     centroids <- centroids %>%
       group_nest(!!sym(names(centroids)[1])) %>%
       mutate(closest = purrr::map(data, closest_focal_point, focal_points = focal_points)) %>%
-      tidyr::unnest(data, closest) %>%
+      unnest_tbl(c("data", "closest")) %>%
       arrange(focal_distance)
 
     if (verbose) {
@@ -156,7 +156,7 @@ create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_f
             tibble(mean = "mean", 
               longitude = mean(centroids$longitude), 
               latitude = mean(centroids$latitude)))) %>%
-        tidyr::unnest(data, closest) %>%
+        unnest_tbl(c("data", "closest")) %>%
         arrange(focal_distance)
       
     }

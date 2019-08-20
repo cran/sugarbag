@@ -7,11 +7,14 @@ knitr::opts_chunk$set(
   fig.height = 4,
   fig.width = 7)
 
-## ------------------------------------------------------------------------
-#devtools::install_github("srkobakian/sugarbag")
+## ----sugarbag------------------------------------------------------------
+#remotes::install_github("srkobakian/sugarbag")
 library(sugarbag)
+
+## ----libraries-----------------------------------------------------------
 library(dplyr)
 library(tidyr)
+library(tibble)
 library(ggplot2)
 
 ## ----centroids-----------------------------------------------------------
