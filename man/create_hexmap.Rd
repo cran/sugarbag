@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_hexmap.R
 \name{create_hexmap}
 \alias{create_hexmap}
-\title{Create a tesselated hexagon map from a set of polygons}
+\title{Create a tessellated hexagon map from a set of polygons}
 \usage{
 create_hexmap(
   shp,
@@ -10,7 +10,6 @@ create_hexmap(
   hex_size = NULL,
   buffer_dist = NULL,
   hex_filter = 10,
-  neighbours = NULL,
   f_width = 30,
   focal_points = NULL,
   order_sf_id = NULL,
@@ -29,8 +28,6 @@ create_hexmap(
 
 \item{hex_filter}{amount of hexagons around centroid to consider}
 
-\item{neighbours}{use the shp sf set to find spatial neighbours}
-
 \item{f_width}{the angle used to filter the grid points around a centroid}
 
 \item{focal_points}{a data frame of reference locations when allocating
@@ -48,7 +45,7 @@ points for each non null geometry passed in the shape file
 }
 \description{
 Allocates each polygon in a shape file to a grid point to create a map of
-tesselated hexagons. The spatial relationships of areas are preserved while
+tessellated hexagons. The spatial relationships of areas are preserved while
 the geographic shape of each area is lost.
 }
 \examples{
@@ -58,6 +55,6 @@ data(capital_cities)
 hexmap <- create_hexmap(
   shp = tas_lga,
   sf_id = "LGA_CODE16",
-  focal_points = capital_cities, verbose = TRUE
-)
+  focal_points = capital_cities, verbose = TRUE)
+
 }

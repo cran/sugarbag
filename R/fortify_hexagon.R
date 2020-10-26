@@ -19,7 +19,6 @@
 #'   hex_grid = grid,
 #'   hex_size = 0.2, # same size used in create_grid
 #'   hex_filter = 1,
-#'   use_neighbours = tas_lga,
 #'   width = 30,
 #'   focal_points = capital_cities,
 #'   verbose = TRUE
@@ -27,7 +26,8 @@
 #' # same column used in create_centroids
 #' fortify_hexagon(data = allocated, sf_id = "LGA_CODE16", hex_size = 0.2)
 fortify_hexagon <- function(data, sf_id, hex_size) {
-
+  
+  
   # Split data by sf_id
   hexagons <- data %>%
     group_nest(!!sf_id := as.character(!!sym(sf_id)), .key = "grouped") %>%
@@ -55,7 +55,7 @@ fortify_hexagon <- function(data, sf_id, hex_size) {
           mutate(
             long = long + hexdata$hex_long,
             lat = lat + hexdata$hex_lat,
-            id = 1:6
+            point_id = 1:6
           )
 
         return(c_hex)
@@ -63,8 +63,8 @@ fortify_hexagon <- function(data, sf_id, hex_size) {
       }
       # close mutate
     )) %>%
-    unnest_tbl("grouped") %>%
-    unnest_tbl("hex") %>%
+    unnest("grouped") %>%
+    unnest("hex") %>%
     mutate(poly_type = "hex")
 
   return(hexagons)

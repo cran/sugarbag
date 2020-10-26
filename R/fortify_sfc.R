@@ -21,10 +21,12 @@ fortify_sfc <- function(sfc_df, keep = NULL) {
   sf_tbl <- sfc_df %>%
     mutate(geom = purrr::map(!!sym("geometry"), function(x) {
       purrr::map_dfr(x, function(y) {
-        purrr::set_names(as_tibble(y[[1]]), c("long", "lat"))
-      }, .id = "polygon")
+        colnames(y[[1]]) <- c("long", "lat")
+        as_tibble(y[[1]])
+        }, 
+      .id = "polygon")
     })) %>%
-    unnest_tbl("geom") %>%
+    unnest("geom") %>%
     mutate(poly_type = "geo")
 
   sf::st_geometry(sf_tbl) <- NULL

@@ -1,66 +1,85 @@
 ## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>", 
-  message = FALSE, 
-  warning = FALSE,
-  fig.height = 4,
-  fig.width = 7)
+  comment = "#>"
+)
 
-## ----sugarbag-----------------------------------------------------------------
-#remotes::install_github("srkobakian/sugarbag")
+## ----aus-anim, warning = FALSE, message = FALSE-------------------------------
 library(sugarbag)
-
-## ----libraries----------------------------------------------------------------
 library(dplyr)
 library(tidyr)
 library(tibble)
 library(ggplot2)
 
 ## ----centroids----------------------------------------------------------------
+# Find the longitude and latitude centroid for each region or area
 centroids <- create_centroids(tas_sa2, sf_id = "SA2_NAME16")
 
 ## ----grid---------------------------------------------------------------------
 grid <- create_grid(centroids = centroids, hex_size = 0.2, buffer_dist = 1.2)
 
-## ----allocation---------------------------------------------------------------
+## ----allocate-----------------------------------------------------------------
+# Allocate the centroids to the hexagon grid
+# We have the same amount of rows, as individual regions
 hex_allocated <- allocate(centroids = centroids,
-  sf_id = "SA2_NAME16",
-  hex_grid = grid,
-  hex_size = 0.2, # same size used in create_grid
-  hex_filter = 10,
-  use_neighbours = tas_sa2,
-  focal_points = capital_cities,
-  width = 30, verbose = TRUE) # same column used in create_centroids
+                          sf_id = "SA2_NAME16",
+                          hex_grid = grid,
+                          hex_size = 0.2, # same size used in create_grid
+                          hex_filter = 10,
+                          focal_points = capital_cities,
+                          # same column used in create_centroids
+                          width = 30, verbose = TRUE) 
 
 ## ----ggplot-------------------------------------------------------------------
-h1 <- hex_allocated %>%
+hexagons <- hex_allocated %>%
   fortify_hexagon(hex_size = 0.2, sf_id = "SA2_NAME16") %>%
-  left_join(., tas_sa2) %>% mutate(poly_type = "hex")
+  left_join(., tas_sa2) %>% 
+  mutate(poly_type = "hex")
 
-p1 <- fortify_sfc(tas_sa2) %>% mutate(poly_type = "geo")
+polygons <- fortify_sfc(tas_sa2) %>% 
+  mutate(poly_type = "geo")
 
 ggplot(mapping = aes(fill = SA4_NAME16)) +
-  geom_polygon(data = p1, aes(x=long, lat, group = interaction(SA2_NAME16,polygon)), alpha = 0.4) +
-  geom_polygon(data = h1, aes(x=long, lat, group = interaction(SA2_NAME16))) + scale_fill_viridis_d()
+  geom_polygon(data = polygons, aes(x=long, lat, group = interaction(SA2_NAME16,polygon)), alpha = 0.4) +
+  geom_polygon(data = hexagons, aes(x=long, lat, group = interaction(SA2_NAME16))) + scale_fill_viridis_d()
 
-## ----animation----------------------------------------------------------------
-hex_anim <- h1 %>% 
+## ----prepareanimation---------------------------------------------------------
+hexagon_points <- hexagons %>% 
   select(SA4_NAME16, SA2_NAME16, 	
 SA2_NAME16, long, lat, poly_type) %>% 
-  left_join(p1 %>% distinct(SA2_NAME16, polygon), by = "SA2_NAME16")
-geo_anim <- p1 %>% 
+  left_join(polygons %>% distinct(SA2_NAME16, polygon), by = "SA2_NAME16")
+polygon_points <- polygons %>% 
   select(SA4_NAME16, SA2_NAME16, 	
 SA2_NAME16, long, lat, polygon, poly_type)
-anim_tas <- bind_rows(hex_anim, geo_anim) %>% left_join(homeless)
+animate_tas <- bind_rows(hexagon_points, polygon_points) %>% left_join(homeless)
 
-anim_tas %>% 
+animate_tas %>% 
   ggplot(aes(x=long, y=lat, group = interaction(polygon, SA2_NAME16))) +
   geom_polygon(aes(fill = SA4_NAME16)) +
-  geom_polygon(data = geo_anim %>% select(-poly_type), fill = "grey40", alpha = 0.05) + 
+  geom_polygon(data = polygon_points %>% select(-poly_type), fill = "grey40", alpha = 0.05) + 
   coord_equal() + 
   theme_void() + 
   guides(fill = guide_legend(title = NULL)) + 
   theme(legend.position = "bottom") +
-  facet_wrap(~poly_type) + scale_fill_viridis_d()
+  facet_wrap(~poly_type) + 
+  scale_fill_viridis_d()
+
+## ----createanimation, eval = FALSE--------------------------------------------
+#  library(gganimate)
+#  
+#  animation <- animate_tas %>%
+#    ggplot(aes(x=long, y=lat, group = interaction(polygon, SA2_NAME16))) +
+#    geom_polygon(aes(fill = SA4_NAME16)) +
+#    geom_polygon(data = polygon_points %>% select(-poly_type), fill = "grey40", alpha = 0.05) +
+#    coord_equal() +
+#    theme_void() +
+#    guides(fill = guide_legend(title = NULL)) +
+#    theme(legend.position = "bottom") +
+#    transition_states(states = poly_type) +
+#    scale_fill_viridis_d()
+#  
+#  animated <- animate(animation, fps = 10, duration = 15,
+#                      start_pause = 5, end_pause = 5, rewind = FALSE)
+#  
+#  anim_save(filename = "tasmania_animation.gif", animated)
 

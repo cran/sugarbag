@@ -1,7 +1,7 @@
-#' Create a tesselated hexagon map from a set of polygons
+#' Create a tessellated hexagon map from a set of polygons
 #'
 #' Allocates each polygon in a shape file to a grid point to create a map of
-#' tesselated hexagons. The spatial relationships of areas are preserved while
+#' tessellated hexagons. The spatial relationships of areas are preserved while
 #' the geographic shape of each area is lost.
 #'
 #' @param shp a shape file, if class is SPDF, will be converted to sf
@@ -9,7 +9,6 @@
 #' @param buffer_dist distance in degrees to extend beyond the geometry provided
 #' @param hex_size a float value in degrees for the diameter of the hexagons
 #' @param hex_filter amount of hexagons around centroid to consider
-#' @param neighbours use the shp sf set to find spatial neighbours
 #' @param f_width the angle used to filter the grid points around a centroid
 #' @param focal_points a data frame of reference locations when allocating
 #' hexagons, capital cities of Australia are used in the example
@@ -28,9 +27,9 @@
 #' hexmap <- create_hexmap(
 #'   shp = tas_lga,
 #'   sf_id = "LGA_CODE16",
-#'   focal_points = capital_cities, verbose = TRUE
-#' )
-create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_filter = 10, neighbours = NULL, f_width = 30, focal_points = NULL, order_sf_id = NULL, export_shp = FALSE, verbose = FALSE) {
+#'   focal_points = capital_cities, verbose = TRUE)
+#' 
+create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_filter = 10, f_width = 30, focal_points = NULL, order_sf_id = NULL, export_shp = FALSE, verbose = FALSE) {
   if (!is.null(shp)) {
     if ("SpatialPolygonsDataFrame" %in% class(shp)) {
       shp_sf <- sf::st_as_sf(shp)
@@ -126,43 +125,6 @@ create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_f
     buffer_dist = buffer_dist
   )
 
-  # consider focal point distance if they were provided
-  if (!is.null(focal_points)) {
-
-    # distance between centroids and all focal points
-    if (verbose) {
-      message("Finding closest point in focal_points data set.")
-    }
-
-    centroids <- centroids %>%
-      group_nest(!!sym(names(centroids)[1])) %>%
-      mutate(closest = purrr::map(data, closest_focal_point, focal_points = focal_points)) %>%
-      unnest_tbl(c("data", "closest")) %>%
-      arrange(focal_distance)
-
-    if (verbose) {
-      message("Closest points found.")
-    }
-  } else {
-    if (!is.null(order_sf_id)) {
-      # if no focal point data set is provided:
-      # Check if areas should be arranged by a variable
-      centroids <- centroids %>%
-        group_nest(!!sym(names(centroids)[1])) %>%
-        arrange(!!sym(order_sf_id))
-    } else{
-      centroids <- centroids %>%
-        group_nest(!!sym(names(centroids)[1])) %>%
-        mutate(closest = purrr::map(data, closest_focal_point, focal_points = 
-            tibble(mean = "mean", 
-              longitude = mean(centroids$longitude), 
-              latitude = mean(centroids$latitude)))) %>%
-        unnest_tbl(c("data", "closest")) %>%
-        arrange(focal_distance)
-      
-    }
-  }
-  
   
   ###########################################################################
   # Allocate polygons to a hexagon
@@ -171,7 +133,6 @@ create_hexmap <- function(shp, sf_id, hex_size = NULL, buffer_dist = NULL, hex_f
     sf_id = sf_id,
     hex_grid = hex_grid,
     hex_size = hex_size,
-    use_neighbours = shp_sf,
     hex_filter = hex_filter,
     width = f_width,
     focal_points = focal_points,

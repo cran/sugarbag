@@ -17,14 +17,15 @@ create_centroids <- function(shp_sf, sf_id, largest = TRUE, verbose = FALSE) {
     message("Deriving polygon centroids")
   }
   
-  # have an option to pass id column
+  # create a set of id values
   ids <- shp_sf %>%
     sf::st_as_sf() %>%
     sf::st_set_geometry(NULL) %>%
     mutate(!!sf_id := !!sym(sf_id)) %>%
     dplyr::select(!!sf_id)
 
-  centroids <- shp_sf %>%
+  # derive the central point of each of the polygons
+  centroids <- sf::st_geometry(shp_sf) %>%
     sf::st_centroid(., of_largest_polygon = largest) %>%
     sf::st_coordinates() %>%
     tibble::as_tibble()
@@ -43,5 +44,6 @@ create_centroids <- function(shp_sf, sf_id, largest = TRUE, verbose = FALSE) {
   centroids <- centroids %>%
     filter(!is.na(longitude)) %>%
     filter(!is.na(latitude))
-  return(suppressWarnings(centroids))
+  
+  return((centroids))
 }
