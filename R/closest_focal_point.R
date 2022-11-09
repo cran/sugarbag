@@ -11,11 +11,18 @@
 #'
 #' @examples
 #' # Create a set of polygon centroids
-#' centroids <- create_centroids(tas_sa2, "SA2_5DIG16")
+#' centroids <- create_centroids(tas_sa2, "sa2_5dig_2016")
 #' 
 #' # Find the closest capital city for the first centroid
 #' closest_focal_point(centroids[1, ], capital_cities)
 closest_focal_point <- function(centroid, focal_points) {
+  
+  if (!(any(grepl("lon", colnames(focal_points))))) {
+    return(message("Missing longitude column in focal points data set. Please provide a data set with longitude and latitude columns."))
+  } else if (!(any(grepl("lat", colnames(focal_points))))) {
+    return(message("Missing latitude column in focal points data set. Please provide a data set with longitude and latitude columns."))
+  }
+  
   
   if ("long" %in% colnames(focal_points)) {
     colnames(focal_points)[which(colnames(focal_points) == "long")] <- "longitude"
