@@ -67,22 +67,22 @@ animate_tas %>%
   scale_fill_viridis_d()
 
 ## ----createanimation, eval = FALSE--------------------------------------------
-#  library(gganimate)
-#  library(transformr)
-#  
-#  animation <- animate_tas %>%
-#    ggplot(aes(x=long, y=lat, group = interaction(polygon, sa2_name_2016))) +
-#    geom_polygon(aes(fill = sa4_name_2016)) +
-#    geom_polygon(data = polygon_points %>% select(-poly_type), fill = "grey40", alpha = 0.05) +
-#    coord_equal() +
-#    theme_void() +
-#    guides(fill = guide_legend(title = NULL)) +
-#    theme(legend.position = "bottom") +
-#    transition_states(states = poly_type) +
-#    scale_fill_viridis_d()
-#  
-#  animated <- animate(animation, fps = 10, duration = 15,
-#                      start_pause = 5, end_pause = 5, rewind = FALSE)
-#  
-#  anim_save(filename = "tasmania_animation.gif", animated)
+# library(gganimate)
+# library(transformr)
+# 
+# animation <- animate_tas %>%
+#   ggplot(aes(x=long, y=lat, group = interaction(polygon, sa2_name_2016))) +
+#   geom_polygon(aes(fill = sa4_name_2016)) +
+#   geom_polygon(data = polygon_points %>% select(-poly_type), fill = "grey40", alpha = 0.05) +
+#   coord_equal() +
+#   theme_void() +
+#   guides(fill = guide_legend(title = NULL)) +
+#   theme(legend.position = "bottom") +
+#   transition_states(states = poly_type) +
+#   scale_fill_viridis_d()
+# 
+# animated <- animate(animation, fps = 10, duration = 15,
+#                     start_pause = 5, end_pause = 5, rewind = FALSE)
+# 
+# anim_save(filename = "tasmania_animation.gif", animated)
 
