@@ -1,6 +1,6 @@
 Package: sugarbag
 Title: Create Tessellated Hexagon Maps
-Version: 0.1.9
+Version: 0.1.10
 Authors@R: c(person("Dianne", "Cook", email = "dicook@monash.edu", role = c("aut", "cre", "ths"),
            comment = c(ORCID = "0000-0002-3813-7155")),
              person("Stephanie", "Kobakian", role = c("aut"),
@@ -25,7 +25,7 @@ RoxygenNote: 7.3.3
 Suggests: knitr, pkgdown, ggplot2, rmarkdown, testthat (>= 2.1.0)
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-12-06 08:44:09 UTC; cookd
+Packaged: 2026-01-22 22:04:47 UTC; cookd
 Author: Dianne Cook [aut, cre, ths] (ORCID:
     <https://orcid.org/0000-0002-3813-7155>),
   Stephanie Kobakian [aut] (ORCID:
@@ -33,4 +33,4 @@ Author: Dianne Cook [aut, cre, ths] (ORCID:
   Matt Cowgill [ctb]
 Maintainer: Dianne Cook <dicook@monash.edu>
 Repository: CRAN
-Date/Publication: 2025-12-06 16:40:02 UTC
+Date/Publication: 2026-01-22 22:20:02 UTC

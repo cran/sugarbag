@@ -1,7 +1,7 @@
-3ec4e2f24210095145f1a837a28a2141 *DESCRIPTION
+2f8501288799c88eb773c6c724b478eb *DESCRIPTION
 0fe959a3b38f6843deff4ec3e39ec196 *LICENSE
 963bde280c46aff00a553054541eb479 *NAMESPACE
-7cc9a0222315de9897bc71dd5ea792a2 *NEWS.md
+9156b971d7475d9b2ec7f1674f07d94b *NEWS.md
 d3754c876e8526c7b24a86b6a4c80297 *R/allocate.R
 b6005836e9f0be5afe5b6d43219c09df *R/closest_focal_point.R
 aebf2be3a14a78d479b0768a448480ba *R/create_buffer.R
@@ -13,7 +13,7 @@ b24e635ff32c998771b8d4e4cd195100 *R/filter_grid_points.R
 40ff8c45c9fffb00cde75b46d269ffe5 *R/find_lat_group.R
 be90cb9627bdd5017461be6f77e080c8 *R/fortify_hexagon.R
 a782e4212671cc9ac6db30e935813e95 *R/fortify_sfc.R
-6b84a49a415269a9d47721635ba80fca *R/global.R
+ed4d2ed93bfc191637533f195d036dcf *R/global.R
 d97789e088bf4a5c04b9a9626842c4a0 *R/reexports.R
 1eca938e6498b655cefec26e3aeef4c8 *R/sugarbag-package.R
 cfffe872da713defc5275f31259e67a0 *R/utils.R
@@ -28,7 +28,7 @@ f57054ae16dc1d68896acde30637635f *data/tas_lga_hexctr.rda
 aa24672fa5d950abf5ac187c61608eda *inst/CITATION
 83fcbd5ec85a400a6d6ee8a2f4be02b1 *inst/doc/Tasmania.R
 fb92e919f766574eb9a3f91f8dfc74ba *inst/doc/Tasmania.Rmd
-ed3932ecc02d609c7d21fe243c56d231 *inst/doc/Tasmania.html
+6387154fdb0f7cc7292521736f30af3f *inst/doc/Tasmania.html
 c1b5090b36918cfae2d830e60d8e2047 *inst/france/france.R
 4d49287947e3e7298231208b6b20d2d2 *man/allocate.Rd
 643a313ed9ad5ae1dccc241fc5eabf72 *man/capital_cities.Rd
